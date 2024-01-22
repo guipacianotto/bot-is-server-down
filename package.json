@@ -24,7 +24,10 @@
     "node-fetch": "^3.3.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "@babel/eslint-parser": "^7.23.3",
+    "eslint": "^8.56.0",
+    "nodemon": "^2.0.15",
+    "prettier": "^3.2.4"
   },
   "repository": "https://guipacianotto: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@github.com/guipacianotto/bot-is-server-down"
 }
