@@ -1,11 +1,19 @@
+// @ts-check
+
 import axios from "axios";
 import AxiosCurlirize from "axios-curlirize";
 import url from "url";
 
 export default class DiscordHtttpClient {
+    /**
+     * @type {DiscordHtttpClient}
+     */
     static instance;
 
     constructor() {
+        /**
+         * @type {import("axios").AxiosInstance}
+         */
         this.axios = axios.create({
             baseURL: process.env.DISCORD_API_HOST,
         });
@@ -19,6 +27,10 @@ export default class DiscordHtttpClient {
         return this.instance;
     }
 
+    /**
+     * @param {string} code
+     * @returns {Promise<unknown>}
+     */
     async oauth(code) {
         const formData = new url.URLSearchParams({
             client_id: process.env.APP_ID.toString(),
