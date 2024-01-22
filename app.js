@@ -9,6 +9,10 @@ import {
 } from 'discord-interactions';
 import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
 import { getShuffledOptions, getResult } from './game.js';
+import FirebaseHandler from './firebase/firebase-connector.js';
+import RolesHandlerFirebase from './roles/roles-handler-firebase.js';
+import DiscordHtttpClient from './discord/discord-http-client.js';
+
 
 // Create an express app
 const app = express();
@@ -19,6 +23,11 @@ app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 // Store for in-progress games. In production, you'd want to use a DB
 const activeGames = {};
+
+FirebaseHandler.getInstance();
+RolesHandlerFirebase.getInstance();
+
+//console.log("Roles: ", await RolesHandlerFirebase.getInstance().getRoles())
 
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
@@ -54,6 +63,21 @@ app.post('/interactions', async function (req, res) {
     }
   }
 });
+
+app.get('/oauth', async function(req, res) {
+  const {code} = req.query;
+
+  if(code) {
+
+    const discorHttpClient = DiscordHtttpClient.getInstance();
+
+    const output = await discorHttpClient.oauth(code);
+
+    return res.send(output);
+  }
+
+  return res.send({error: "code not provided."})
+})
 
 app.listen(PORT, () => {
   console.log('Listening on port', PORT);
