@@ -1,0 +1,16 @@
+{
+    "auth": {
+        "AUTH-001": {
+            "title": "SCOPE_NOT_FOUND",
+            "message": "Role não encontrada na base da dados do BOT :( "
+        },
+        "AUTH-002": {
+            "title": "UNAUTHORIZED",
+            "message": "Infelizmente sua Role não possui permissão para rodar este comando"
+        },
+        "AUTH-003": {
+            "title": "BAD_GATEWAY",
+            "message": "Não foi possível se conectar com o Firebase, favor contactar os devs :)"
+        }
+    }
+}

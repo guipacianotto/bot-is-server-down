@@ -13,6 +13,7 @@ import FirebaseHandler from "./firebase/firebase-connector.js";
 import RolesHandlerFirebase from "./roles/roles-handler-firebase.js";
 import DiscordHtttpClient from "./discord/discord-http-client.js";
 import DiscordWordHandler from "./discord/discord-word-handler.js";
+import RoleAuthenticator from "./roles/role-authenticator.js";
 
 // Create an express app
 const app = express();
@@ -32,7 +33,9 @@ RolesHandlerFirebase.getInstance();
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
  */
-app.post("/interactions", async function (req, res) {
+app.post("/interactions", 
+    RoleAuthenticator.auth, 
+    async function (req, res) {
     // Interaction type and data
     const { type, id, data, member, guild_id, token } = req.body;
 
@@ -66,21 +69,23 @@ app.post("/interactions", async function (req, res) {
 
         if(name === "test-user") {
 
-            const availableRoles = RolesHandlerFirebase.getInstance().getRoles();
+            /* const availableRoles = RolesHandlerFirebase.getInstance().getRoles(); */
+
+
+
+            const firebaseRoles = await RolesHandlerFirebase.getInstance().fetchRolesByGuild(guild_id);
 
             const discordHttpClient = DiscordHtttpClient.getInstance();
+            const guildRoles = (await discordHttpClient.getGuildRoles(guild_id)).data;
 
-            const guild = (await discordHttpClient.getGuild(guild_id)).data;
-
-            const jsonContent = JSON.stringify(guild, null, "\t");
+            const jsonContentGuildRoles = JSON.stringify(guildRoles, null, "\t");
+            const jsonContentFirebaseRoles = JSON.stringify(firebaseRoles, null, "\t")
 
             const output = "Olá " + 
                 member.user.global_name + 
                 " \nguild_id: " + guild_id + 
-                " \nGuild Roles: ```json\n" + jsonContent +"```";
-            
-            
-
+                " \nGuild Roles: ```json\n" + jsonContentGuildRoles +"```" +
+                " \nFirebase Roles: ```json\n" + jsonContentFirebaseRoles +  "```";
 
             return res.send({
                 type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

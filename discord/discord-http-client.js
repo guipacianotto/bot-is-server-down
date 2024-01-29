@@ -67,4 +67,20 @@ export default class DiscordHtttpClient {
             }
         )
     }
+
+    /**
+     * @param {string} id
+     */
+    async getGuildRoles(id) {
+        const readyToken = "Bot " + process.env.DISCORD_TOKEN;
+
+        return this.axios.get(
+            `/guilds/${id}/roles`,
+            {
+                headers: {
+                    "Authorization": readyToken
+                }
+            }
+        )
+    }
 }

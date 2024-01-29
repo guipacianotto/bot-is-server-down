@@ -1,13 +1,23 @@
+//@ts-check
 import FirebaseHandler from "../firebase/firebase-connector.js";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 export default class RolesHandlerFirebase {
+    /**
+     * @type {RolesHandlerFirebase}
+     */
     static instance;
+    /**
+     * @type {any}
+     */
     static firestore;
+    /**
+     * @type {any}
+     */
     static roles;
 
     constructor() {
-        if (!this.instance) {
+        if (!RolesHandlerFirebase.instance) {
             this.firestore = this.initializeFireStore();
             this.roles = this.fetchRoles().then(result => {
                 return result;
@@ -35,6 +45,7 @@ export default class RolesHandlerFirebase {
     async fetchRoles() {
         const firestore = this.firestore;
 
+        //@ts-ignore
         const docRef = doc(firestore, "rub-scopes", "discord-scopes");
 
         const data = await getDoc(docRef);
@@ -44,5 +55,19 @@ export default class RolesHandlerFirebase {
 
     getRoles() {
         return this.roles;
+    }
+
+    /**
+     * @param {string} guild_id
+     */
+    async fetchRolesByGuild(guild_id) {
+        const firestore = this.firestore;
+
+        //@ts-ignore
+        const docRef = doc(firestore, "rub-scopes", guild_id);
+
+        const data = await getDoc(docRef);
+
+        return data.data();
     }
 }
