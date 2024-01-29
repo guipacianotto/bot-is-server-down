@@ -12,6 +12,7 @@ import { getShuffledOptions, getResult } from "./game.js";
 import FirebaseHandler from "./firebase/firebase-connector.js";
 import RolesHandlerFirebase from "./roles/roles-handler-firebase.js";
 import DiscordHtttpClient from "./discord/discord-http-client.js";
+import DiscordWordHandler from "./discord/discord-word-handler.js";
 
 // Create an express app
 const app = express();
@@ -71,16 +72,20 @@ app.post("/interactions", async function (req, res) {
 
             const guild = (await discordHttpClient.getGuild(guild_id)).data;
 
-            const jsonContent = JSON.stringify(guild.roles, null, "\t");
+            const jsonContent = JSON.stringify(guild, null, "\t");
+
+            const output = "Olá " + 
+                member.user.global_name + 
+                " \nguild_id: " + guild_id + 
+                " \nGuild Roles: ```json\n" + jsonContent +"```";
+            
+            
+
 
             return res.send({
                 type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
-                    content: 
-                    "Olá " + 
-                    member.user.global_name + 
-                    " \nguild_id: " + guild_id + 
-                    " \nGuild Roles: ```json\n" + jsonContent +"```"
+                    content: DiscordWordHandler.formatMessage(output, "**Mensagem muito longa, encurtando...**")
                 }
             })
             
