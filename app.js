@@ -33,7 +33,9 @@ RolesHandlerFirebase.getInstance();
  */
 app.post("/interactions", async function (req, res) {
     // Interaction type and data
-    const { type, id, data } = req.body;
+    const { type, id, data, member, guild_id, token } = req.body;
+
+    console.log("body: ",req.body);
 
     /**
      * Handle verification requests
@@ -56,9 +58,32 @@ app.post("/interactions", async function (req, res) {
                 type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
                     // Fetches a random emoji to send from a helper function
-                    content: "hello world " + getRandomEmoji(),
+                    content: "Olá " + member.user.global_name
                 },
             });
+        }
+
+        if(name === "test-user") {
+
+            const availableRoles = RolesHandlerFirebase.getInstance().getRoles();
+
+            const discordHttpClient = DiscordHtttpClient.getInstance();
+
+            const guild = (await discordHttpClient.getGuild(guild_id)).data;
+
+            const jsonContent = JSON.stringify(guild.roles, null, "\t");
+
+            return res.send({
+                type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                data: {
+                    content: 
+                    "Olá " + 
+                    member.user.global_name + 
+                    " \nguild_id: " + guild_id + 
+                    " \nGuild Roles: ```json\n" + jsonContent +"```"
+                }
+            })
+            
         }
     }
 });
@@ -75,6 +100,11 @@ app.get("/oauth", async function (req, res) {
     }
 
     return res.send({ error: "code not provided." });
+});
+
+app.get("/guild", async function (req,res) {
+
+  return req.send(await DiscordRequest("/guild/1197187451232473170", {}));
 });
 
 app.listen(PORT, () => {

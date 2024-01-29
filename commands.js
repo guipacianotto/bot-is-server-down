@@ -40,6 +40,12 @@ const CHALLENGE_COMMAND = {
     type: 1,
 };
 
-const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND];
+const COMMAND_TEST_USER = {
+    name: "test-user",
+    description: "Comando para testar funcionalidade de usuário",
+    type: 1
+}
+
+const ALL_COMMANDS = [TEST_COMMAND, CHALLENGE_COMMAND, COMMAND_TEST_USER];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
